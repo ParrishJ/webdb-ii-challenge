@@ -13,15 +13,19 @@ const knexConfig = {
 const db = knex(knexConfig);
 
 router.post('/', (req, res) => {
-    db('zoos')
-        .insert(req.body, 'id')
-        .then(ids => {
-            res.status(201).json(ids);
-        })
-        .catch(error => {
-            res.status(500).json(error);
-        });
-});
+    if (req.body.name) {
+        db('zoos')
+            .insert(req.body, 'id')
+            .then(ids => {
+                res.status(201).json(ids)
+            })
+            .catch(error => {
+                res.status(500).json({ error: 'Could not add zoo' })
+            })
+    } else {
+        res.status(400).json({ error: 'Must include name' })
+    }
+})
 
 router.get('/', (req, res) => {
     db('zoos')
